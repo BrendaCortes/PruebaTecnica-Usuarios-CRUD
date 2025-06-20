@@ -1,61 +1,85 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+Para la realización de este proyecto decidí implementar el backend utilizando el framework Laravel junto con Vue.js para el frontend.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Aunque inicialmente no tenía experiencia con estos frameworks, tras investigar un poco sobre sus características y compatibilidad, opté por usar Vue.js debido a su integración nativa con Laravel.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Implementé la autenticación básica utilizando Laravel Breeze, aprovechando el modelo de usuario que incluye por defecto. Además, integré Vue.js mediante Inertia.js, lo que permite desarrollar la aplicación como un único proyecto full-stack de forma fluida y eficiente.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Configurar Autenticación Básica
+Sigue estos pasos para configurar una autenticación básica con Laravel Breeze e Inertia.js + Vue:
 
-## Learning Laravel
+1. Requisitos previos
+Asegúrate de tener instalados:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Composer
+Node.js y npm
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2. Crear un nuevo proyecto de Laravel
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+composer create-project --prefer-dist laravel/laravel nombre_del_proyecto
+```
+3. Acceder al directorio del proyecto
+```bash
+cd nombre_del_proyecto
+```
+4. Agregar Laravel Breeze
+```bash
+composer require laravel/breeze --dev
+```
+5. Instalar Breeze
+```bash
+php artisan breeze:install
+```
+Durante la instalación, selecciona Inertia + Vue como stack frontend.
+6. Instalar dependencias de Node.js
+```bash
+npm install
+```
+7. Levantar los servidores de desarrollo
+```bash
+php artisan serve
+```
+En otra terminal:
+```bash
+npm run dev
+```
+Nota:
+Puedes ejecutar las migraciones con:
 
-## Laravel Sponsors
+```bash
+php artisan migrate
+```
+Sin embargo, aún no se ha configurado el archivo .env ni editado las migraciones ni el modelo de datos para añadir información adicional al usuario.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## CRUD Gestión de Usuarios
 
-### Premium Partners
+1. Configurar el .env para este proyecto opte por utilizar Mysql.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+con los siguientes dAtos de conexion 
+```bash
 
-## Contributing
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=user_management
+DB_USERNAME=root
+DB_PASSWORD=
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
 
-## Code of Conduct
+2. El modelo "User" que inclueye Laravel Brezze por defecto, ya incluye por defecto los campos de:  
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    'name'
+    'email'
+    'password'
 
-## Security Vulnerabilities
+editare el modelo y la migracion para agregar de telefono y apellido, aprovechando al maximo las herramientas que nos brinda la starte key.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    'name'
+    'lastName'
+    'email'
+    'password'
+    'number_phone'
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
