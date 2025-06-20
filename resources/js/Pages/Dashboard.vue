@@ -6,21 +6,18 @@ import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue'
 import { Head } from '@inertiajs/vue3'
 import { ref, computed, watch } from 'vue'
 import { usePage } from '@inertiajs/vue3'
-import { Inertia } from '@inertiajs/inertia'
 import pagination from '@/Components/pagination.vue'
-
+import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
   users: Object,
   search: String,
   roles: Array,
+  isAdmin: Boolean,
 })
 
 const page = usePage()
 const successMessage = computed(() => page.props.flash?.success)
-
-
-const search = ref(props.search || '')
 const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const selectedUser = ref(null)
@@ -37,25 +34,17 @@ const openDeleteModal = (user) => {
   showDeleteModal.value = true
 }
 
-let debounceTimeout = null
-watch(search, (newSearch) => {
-  clearTimeout(debounceTimeout)
-  debounceTimeout = setTimeout(() => {
-    Inertia.get('/dashboard', { search: newSearch }, { preserveState: true, replace: true })
-  }, 300)
-})
-</script>
-
-<script>
-export default {
-  methods: {
-    exportarUsuarios() {
-      window.open(route('usuarios.export'), '_blank');
-    }
-  }
+const exportarUsuarios = () => {
+  window.open(route('usuarios.export'), '_blank')
 }
-</script>
 
+const searchQuery = ref(props.search || '')
+
+const buscarUsuarios = () => {
+  router.get(route('dashboard'), { search: searchQuery.value }, { preserveState: true })
+}
+
+</script>
 
 <template>
   <Head title="Dashboard" />
@@ -74,11 +63,10 @@ export default {
             <div v-if="successMessage" class="mb-4 p-4 rounded bg-green-100 text-green-800 border border-green-300">
               {{ successMessage }}
             </div>
-
             <div class="flex justify-between items-center mb-4">
               <h1 class="text-2xl font-bold">Usuarios</h1>
               <div class="space-x-2">
-                <button @click="showCreateModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                <button @click="showCreateModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" v-if="isAdmin">
                   <i class="fa-solid fa-user-plus"></i>
                 </button>
                 <button  @click="exportarUsuarios" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
@@ -86,15 +74,19 @@ export default {
                 </button>
               </div>
             </div>
-
+            <div class="flex items-center space-x-2 w-full">
+              <input
+                v-model="searchQuery"
+                @keyup.enter="buscarUsuarios"
+                type="text"
+                placeholder="Buscar usuario..."
+                class="border border-gray-300 px-3 py-2 rounded w-full"
+              />
+              <button @click="buscarUsuarios" class="bg-blue-600 text-white px-3 py-2 mb-3 rounded hover:bg-blue-700">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+            </div>
             <UserModal :show="showCreateModal" :roles="roles" @close="showCreateModal = false" />
-          
-            <input
-              v-model="search"
-              type="text"
-              placeholder="Buscar por nombre, apellido, email o teléfono..."
-              class="mb-4 w-full px-4 py-2 border rounded shadow focus:outline-none focus:ring focus:border-blue-300"
-            />
 
             <table class="min-w-full bg-white border border-gray-200 shadow-sm rounded-lg overflow-hidden">
               <thead class="bg-gray-100">
@@ -104,7 +96,7 @@ export default {
                   <th class="text-left px-4 py-2">Email</th>
                   <th class="text-left px-4 py-2">Teléfono</th>
                   <th class="text-left px-4 py-2">Rol</th>
-                  <th class="text-center px-4 py-2">Acciones</th>
+                  <th class="text-center px-4 py-2" v-if="isAdmin">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -118,7 +110,7 @@ export default {
                   <td class="px-4 py-2">{{ user.email }}</td>
                   <td class="px-4 py-2">{{ user.phoneNumber }}</td>
                   <td class="px-4 py-2">{{ user.role.name }}</td>
-                  <td class="px-4 py-2 text-center space-x-2">
+                  <td class="px-4 py-2 text-center space-x-2" v-if="isAdmin">
                     <button @click="openEditModal(user)" class="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded">
                       <i class="fa-solid fa-pen-to-square"></i>
                     </button>

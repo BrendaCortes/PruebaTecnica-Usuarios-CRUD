@@ -32,11 +32,13 @@ class UserController extends Controller
         ->withQueryString();
         
         $roles = Role::select('id', 'name')->get();
+        $isAdmin = auth()->user()?->role?->name === 'Admin';
 
         return Inertia::render('Dashboard', [
             'users' => $users,
             'search' => $search, 
             'roles' => $roles,
+            'isAdmin' => $isAdmin,
         ]);
     }
 
@@ -46,7 +48,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'phoneNumber' => 'nullable|string|max:12',
+            'phoneNumber' => 'required|string|max:12',
             'password' => 'required|string|min:6',
             'role_id' => 'required|exists:roles,id',
         ]);
@@ -62,7 +64,7 @@ public function updateUser(Request $request, User $user)
         'name' => 'required|string|max:255',
         'lastName' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email,' . $user->id,
-        'phoneNumber' => 'nullable|string|max:12',
+        'phoneNumber' => 'required|string|max:12',
         'password' => 'nullable|string|min:6',
         'role_id' => 'required|exists:roles,id',
     ]);

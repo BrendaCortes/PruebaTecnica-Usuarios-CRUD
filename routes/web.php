@@ -15,15 +15,6 @@ Route::get('/', function () {
     ]);
 });
 
-/*
-Route::get('/dashboard', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::post('/usuarios', [UserController::class, 'addUser'])->name('usuarios.addUser');
-Route::put('/usuarios/{user}', [UserController::class, 'updateUser'])->name('usuarios.updateUser');
-Route::delete('/usuarios/{user}', [UserController::class, 'deleteUser'])->name('usuarios.deleteUser');
-Route::get('/usuarios/export', [UserController::class, 'export'])->name('usuarios.export');
-*/
-
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
     Route::get('/usuarios/export', [UserController::class, 'export'])->name('usuarios.export');
